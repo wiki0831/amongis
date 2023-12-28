@@ -1,0 +1,37 @@
+# Use postgres/example user/password credentials
+version: "3.1"
+
+services:
+  database:
+    image: postgis/postgis
+    restart: always
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: notverysafe
+      POSTGRES_DB: amongis
+    ports:
+      - 5432:5432
+    volumes:
+      - pg-data:/var/lib/postgresql/data/
+      - ./sql/Startup.sql:/docker-entrypoint-initdb.d/01_startup.sql
+
+  app:
+    restart: always
+    build:
+      dockerfile: Dockerfile
+      context: .
+    ports:
+      - 3000:3000
+    depends_on:
+      database:
+        condition: service_healthy
+    links:
+      - database
+
+volumes:
+  pg-data:

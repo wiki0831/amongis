@@ -1,0 +1,6 @@
+.vscode/*
+logs/server.log
+amongis
+.DS_Store
+vendor
+__debug_*
