@@ -1,0 +1,169 @@
+{
+	"info": {
+		"_postman_id": "cf1f2436-fef8-41e9-a06e-ae3cc2cc0c6b",
+		"name": "amongis",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "7629918"
+	},
+	"item": [
+		{
+			"name": "welcome",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseURL}}/api/health",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"api",
+						"health"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getAllActivePlayer",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseURL}}/api/player",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"api",
+						"player"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "playerTelem",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"wei\",\n    \"role\": \"crew\",\n    \"room\": \"VT drill field\",\n    \"status\": \"alive\",\n    \"location\": {\n        \"type\": \"Point\",\n        \"coordinates\": [\n          -80.69576723076997,\n          37.07968143441539\n        ]\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/api/player",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"api",
+						"player"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "by player name",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseURL}}/api/player/:playerName",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"api",
+						"player",
+						":playerName"
+					],
+					"variable": [
+						{
+							"key": "playerName",
+							"value": null
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "FeatreServ CQL example",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:9000/collections/public.player/items?filter=\"name\" = 'wei'",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9000",
+					"path": [
+						"collections",
+						"public.player",
+						"items"
+					],
+					"query": [
+						{
+							"key": "filter",
+							"value": "\"name\" = 'wei'"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseURL",
+			"value": "127.0.0.1:3000",
+			"type": "string"
+		}
+	]
+}
