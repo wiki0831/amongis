@@ -8,7 +8,7 @@ import (
 	"github.com/jackc/pgx/v5"
 )
 
-func CreateLocation(location model.LocationModel) error {
+func CreateLocation(location model.Location) error {
 	query := `
 			INSERT INTO location 
 				(name, role, room, status, location, created_at) 
@@ -31,5 +31,3 @@ func CreateLocation(location model.LocationModel) error {
 
 	return nil
 }
-
-

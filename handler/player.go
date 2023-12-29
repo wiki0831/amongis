@@ -36,15 +36,15 @@ func GetAllPlayers(c *fiber.Ctx) error {
 
 func PostPlayerTelem(c *fiber.Ctx) error {
 	// parse body and validate basic input
-	user := new(model.PlayerModel)
-	if inputErr := c.BodyParser(user); inputErr != nil {
+	player := new(model.Player)
+	if inputErr := c.BodyParser(player); inputErr != nil {
 		return c.
 			Status(500).
 			JSON(fiber.Map{"status": "error", "message": "Review your input", "errors": inputErr.Error()})
 	}
 
 	// validate business logic
-	validtionErr := user.Validate()
+	validtionErr := player.Validate()
 	if validtionErr != nil {
 		return c.
 			Status(500).
@@ -52,7 +52,7 @@ func PostPlayerTelem(c *fiber.Ctx) error {
 	}
 
 	// save player telemetry to db
-	dbErr := database.CreatePlayerTelemetry(*user)
+	dbErr := database.CreatePlayerTelemetry(*player)
 	if dbErr != nil {
 		return c.
 			Status(500).
@@ -61,14 +61,14 @@ func PostPlayerTelem(c *fiber.Ctx) error {
 	}
 
 	// compute user actionable items
-	actions, logicErr := logic.GetActionItem(user)
+	actions, logicErr := logic.GetActionItem(player)
 	if logicErr != nil {
 		return c.
 			Status(500).
 			JSON(fiber.Map{"status": "error", "message": "unable to compute user actions", "errors": logicErr.Error()})
-
 	}
-	// TODO
+	// perform action items
+	logic.PerformActionItem(player, actions)
 
 	return c.Status(200).JSON(actions)
 }

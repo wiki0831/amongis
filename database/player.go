@@ -8,7 +8,7 @@ import (
 	"github.com/jackc/pgx/v5"
 )
 
-func GetPlayerInfo(name string) (*model.PlayerModel, error) {
+func GetPlayerInfo(name string) (*model.Player, error) {
 	ctx := context.Background()
 	queryString := fmt.Sprintf(
 		`SELECT 
@@ -23,10 +23,10 @@ func GetPlayerInfo(name string) (*model.PlayerModel, error) {
 		return nil, fmt.Errorf("player doesnt exist")
 	}
 
-	var players []model.PlayerModel
+	var players []model.Player
 
 	for rows.Next() {
-		var player model.PlayerModel
+		var player model.Player
 		err := rows.Scan(&player.Id, &player.Name, &player.Role, &player.Room, &player.Status, &player.CreatedAt, &player.Location)
 		if err != nil {
 			return nil, err
@@ -42,7 +42,7 @@ func GetPlayerInfo(name string) (*model.PlayerModel, error) {
 	return &players[0], nil
 }
 
-func GetAllPlayerInfo() ([]model.PlayerModel, error) {
+func GetAllPlayerInfo() ([]model.Player, error) {
 	ctx := context.Background()
 	queryString := `SELECT 
 		id, name, role, room, status, created_at, ST_AsBinary(location) 
@@ -53,10 +53,10 @@ func GetAllPlayerInfo() ([]model.PlayerModel, error) {
 		return nil, fmt.Errorf("player doesnt exist")
 	}
 
-	var players []model.PlayerModel
+	var players []model.Player
 
 	for rows.Next() {
-		var player model.PlayerModel
+		var player model.Player
 		err := rows.Scan(&player.Id, &player.Name, &player.Role, &player.Room, &player.Status, &player.CreatedAt, &player.Location)
 		if err != nil {
 			return nil, err
@@ -68,7 +68,7 @@ func GetAllPlayerInfo() ([]model.PlayerModel, error) {
 	return players, nil
 }
 
-func CreatePlayerTelemetry(user model.PlayerModel) error {
+func CreatePlayerTelemetry(user model.Player) error {
 	query := `
 			INSERT INTO player 
 				(name, role, room, status, location, created_at) 
@@ -92,14 +92,15 @@ func CreatePlayerTelemetry(user model.PlayerModel) error {
 	return nil
 }
 
-func GetPlayersNearby(currentPlayer model.PlayerModel) ([]model.PlayerModel, error) {
+func GetPlayersNearby(currentPlayer model.Player) ([]model.Player, error) {
 
 	ctx := context.Background()
 	queryString := fmt.Sprintf(
 		`SELECT 
 		id, name, role, room, status, created_at, ST_AsBinary(location) 
 		FROM latest_player_data 
-		where  name != '%s'`,
+		where  name != '%s'
+		and status = 'alive'`,
 		currentPlayer.Name,
 	)
 
@@ -108,10 +109,10 @@ func GetPlayersNearby(currentPlayer model.PlayerModel) ([]model.PlayerModel, err
 		return nil, fmt.Errorf("player doesnt exist")
 	}
 
-	var players []model.PlayerModel
+	var players []model.Player
 
 	for rows.Next() {
-		var player model.PlayerModel
+		var player model.Player
 		err := rows.Scan(&player.Id, &player.Name, &player.Role, &player.Room, &player.Status, &player.CreatedAt, &player.Location)
 		if err != nil {
 			return nil, err

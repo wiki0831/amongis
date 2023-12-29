@@ -8,7 +8,7 @@ import (
 	"github.com/peterstace/simplefeatures/geom"
 )
 
-type LocationModel struct {
+type Location struct {
 	Name      string     `json:"name" required:"true"`
 	Id        uuid.UUID  `json:"id"`
 	CreatedAt time.Time  `json:"created_at"`
@@ -18,14 +18,14 @@ type LocationModel struct {
 	Location  geom.Point `json:"location" required:"true"`
 }
 
-func (l *LocationModel) Validate() error {
+func (l *Location) Validate() error {
 	if l.CreatedAt.IsZero() {
 		l.CreatedAt = time.Now()
 	}
 	if l.Name == "" {
 		return fmt.Errorf("empty user name")
 	}
-	if l.Role != "exit" && l.Role != "mission"&& l.Role != "respawn"{
+	if l.Role != "exit" && l.Role != "mission" && l.Role != "respawn" {
 		return fmt.Errorf("invalid role")
 	}
 
