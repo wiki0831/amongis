@@ -40,6 +40,7 @@ func main() {
 
 	//DB Connection
 	database.ConnectDB(os.Getenv("DATABASE_URL"))
+	
 	//Close db connection upon return
 	defer database.DB.Close()
 

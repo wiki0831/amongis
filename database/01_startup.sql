@@ -12,7 +12,7 @@ CREATE TABLE telemetry (
     role VARCHAR(50),
     room VARCHAR(50),
     status VARCHAR(50),
-    location GEOMETRY(Point, 4326)
+    location GEOMETRY(Geometry, 4326)
 );
 -- Create latest player view
 CREATE VIEW latest_player_data AS

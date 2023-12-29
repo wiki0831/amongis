@@ -15,7 +15,7 @@ type PlayerModel struct {
 	Role      string     `json:"role"`
 	Room      string     `json:"room"`
 	Status    string     `json:"status"`
-	Location  geom.Point `json:"location" required:"true"`
+	Location  geom.Geometry `json:"location" required:"true"`
 }
 
 func (p *PlayerModel) Validate() error {
