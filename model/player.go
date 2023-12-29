@@ -25,9 +25,16 @@ func (p *PlayerModel) Validate() error {
 	if p.Name == "" {
 		return fmt.Errorf("empty user name")
 	}
-	if p.Role != "killer" && p.Role != "player"{
+	if p.Role != "killer" && p.Role != "player" {
 		return fmt.Errorf("invalid role")
 	}
 
 	return nil
 }
+
+type ActionModel struct {
+	ActionType string `json:"action_type" required:"true"`
+	Target     string `json:"target" required:"true"`
+}
+
+

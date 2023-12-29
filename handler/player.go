@@ -2,6 +2,7 @@ package handler
 
 import (
 	"amongis/database"
+	"amongis/logic"
 	"amongis/model"
 
 	"github.com/gofiber/fiber/v2"
@@ -43,11 +44,11 @@ func PostPlayerTelem(c *fiber.Ctx) error {
 	}
 
 	// validate business logic
-	logicErr := user.Validate()
-	if logicErr != nil {
+	validtionErr := user.Validate()
+	if validtionErr != nil {
 		return c.
 			Status(500).
-			JSON(fiber.Map{"status": "error", "message": "Review your input", "errors": logicErr.Error()})
+			JSON(fiber.Map{"status": "error", "message": "Review your input", "errors": validtionErr.Error()})
 	}
 
 	// save player telemetry to db
@@ -60,7 +61,14 @@ func PostPlayerTelem(c *fiber.Ctx) error {
 	}
 
 	// compute user actionable items
+	actions, logicErr := logic.GetActionItem(user)
+	if logicErr != nil {
+		return c.
+			Status(500).
+			JSON(fiber.Map{"status": "error", "message": "unable to compute user actions", "errors": logicErr.Error()})
+
+	}
 	// TODO
 
-	return c.Status(200).SendString("telmetry logged 👍")
+	return c.Status(200).JSON(actions)
 }

@@ -91,3 +91,34 @@ func CreatePlayerTelemetry(user model.PlayerModel) error {
 
 	return nil
 }
+
+func GetPlayersNearby(currentPlayer model.PlayerModel) ([]model.PlayerModel, error) {
+
+	ctx := context.Background()
+	queryString := fmt.Sprintf(
+		`SELECT 
+		id, name, role, room, status, created_at, ST_AsBinary(location) 
+		FROM latest_player_data 
+		where  name != '%s'`,
+		currentPlayer.Name,
+	)
+
+	rows, err := DB.Query(ctx, queryString)
+	if err != nil {
+		return nil, fmt.Errorf("player doesnt exist")
+	}
+
+	var players []model.PlayerModel
+
+	for rows.Next() {
+		var player model.PlayerModel
+		err := rows.Scan(&player.Id, &player.Name, &player.Role, &player.Room, &player.Status, &player.CreatedAt, &player.Location)
+		if err != nil {
+			return nil, err
+		}
+
+		players = append(players, player)
+	}
+
+	return players, nil
+}
