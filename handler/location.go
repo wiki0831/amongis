@@ -9,7 +9,7 @@ import (
 
 func PostLocation(c *fiber.Ctx) error {
 	// parse body and validate basic input
-	location := new(model.LocationModel)
+	location := new(model.Location)
 	if inputErr := c.BodyParser(location); inputErr != nil {
 		return c.
 			Status(500).

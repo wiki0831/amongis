@@ -2,6 +2,7 @@ package handler
 
 import (
 	"amongis/database"
+	"amongis/logic"
 	"amongis/model"
 
 	"github.com/gofiber/fiber/v2"
@@ -35,23 +36,23 @@ func GetAllPlayers(c *fiber.Ctx) error {
 
 func PostPlayerTelem(c *fiber.Ctx) error {
 	// parse body and validate basic input
-	user := new(model.PlayerModel)
-	if inputErr := c.BodyParser(user); inputErr != nil {
+	player := new(model.Player)
+	if inputErr := c.BodyParser(player); inputErr != nil {
 		return c.
 			Status(500).
 			JSON(fiber.Map{"status": "error", "message": "Review your input", "errors": inputErr.Error()})
 	}
 
 	// validate business logic
-	logicErr := user.Validate()
-	if logicErr != nil {
+	validtionErr := player.Validate()
+	if validtionErr != nil {
 		return c.
 			Status(500).
-			JSON(fiber.Map{"status": "error", "message": "Review your input", "errors": logicErr.Error()})
+			JSON(fiber.Map{"status": "error", "message": "Review your input", "errors": validtionErr.Error()})
 	}
 
 	// save player telemetry to db
-	dbErr := database.CreatePlayerTelemetry(*user)
+	dbErr := database.CreatePlayerTelemetry(*player)
 	if dbErr != nil {
 		return c.
 			Status(500).
@@ -60,7 +61,14 @@ func PostPlayerTelem(c *fiber.Ctx) error {
 	}
 
 	// compute user actionable items
-	// TODO
+	actions, logicErr := logic.GetActionItem(player)
+	if logicErr != nil {
+		return c.
+			Status(500).
+			JSON(fiber.Map{"status": "error", "message": "unable to compute user actions", "errors": logicErr.Error()})
+	}
+	// perform action items
+	logic.PerformActionItem(player, actions)
 
-	return c.Status(200).SendString("telmetry logged 👍")
+	return c.Status(200).JSON(actions)
 }
