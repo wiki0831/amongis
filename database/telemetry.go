@@ -8,9 +8,9 @@ import (
 	"github.com/jackc/pgx/v5"
 )
 
-func CreateTelemetry(user model.PlayerModel) error {
+func CreatePlayerTelemetry(user model.PlayerModel) error {
 	query := `
-			INSERT INTO telemetry 
+			INSERT INTO player 
 				(name, role, room, status, location, created_at) 
 			VALUES 
 				(@userName, @userRole, @userRoom, @userStatus, ST_GeomFromWKB(@userLocation,4326), @userTimestamp)`

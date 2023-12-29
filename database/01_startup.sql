@@ -5,7 +5,7 @@ CREATE EXTENSION postgis_sfcgal;
 -- Performance related, you can turn it on of off and use 'explain analyze' on geometrydump.geom 
 SET jit = off;
 -- Create Table
-CREATE TABLE telemetry (
+CREATE TABLE player (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     name VARCHAR(100),
@@ -17,6 +17,6 @@ CREATE TABLE telemetry (
 -- Create latest player view
 CREATE VIEW latest_player_data AS
 SELECT DISTINCT ON (name) *
-FROM telemetry
+FROM player
 ORDER BY name,
     created_at DESC;

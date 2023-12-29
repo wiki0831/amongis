@@ -16,6 +16,8 @@ func SetupRoutes(app *fiber.App) {
 	api.Get("/ping", handler.Pong)
 	api.Get("/health", handler.HealthCheck)
 
-	telmetry := api.Group("/telemetry", logger.New())
-	telmetry.Post("/", handler.LogTelemetry)
+	player := api.Group("/player", logger.New())
+	player.Get("/", handler.GetAllPlayers)
+	player.Post("/", handler.PostPlayerTelem)
+	player.Get("/:userName", handler.GetPlayer)
 }
