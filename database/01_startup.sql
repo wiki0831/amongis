@@ -14,6 +14,16 @@ CREATE TABLE player (
     status VARCHAR(50),
     location GEOMETRY(Point, 4326)
 );
+
+CREATE TABLE location (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    name VARCHAR(100),
+    role VARCHAR(50),
+    room VARCHAR(50),
+    status VARCHAR(50),
+    location GEOMETRY(Point, 4326)
+);
 -- Create latest player view
 CREATE VIEW latest_player_data AS
 SELECT DISTINCT ON (name) *

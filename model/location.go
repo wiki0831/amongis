@@ -8,7 +8,7 @@ import (
 	"github.com/peterstace/simplefeatures/geom"
 )
 
-type PlayerModel struct {
+type LocationModel struct {
 	Name      string     `json:"name" required:"true"`
 	Id        uuid.UUID  `json:"id"`
 	CreatedAt time.Time  `json:"created_at"`
@@ -18,14 +18,14 @@ type PlayerModel struct {
 	Location  geom.Point `json:"location" required:"true"`
 }
 
-func (p *PlayerModel) Validate() error {
-	if p.CreatedAt.IsZero() {
-		p.CreatedAt = time.Now()
+func (l *LocationModel) Validate() error {
+	if l.CreatedAt.IsZero() {
+		l.CreatedAt = time.Now()
 	}
-	if p.Name == "" {
+	if l.Name == "" {
 		return fmt.Errorf("empty user name")
 	}
-	if p.Role != "killer" && p.Role != "player"{
+	if l.Role != "exit" && l.Role != "mission"&& l.Role != "respawn"{
 		return fmt.Errorf("invalid role")
 	}
 

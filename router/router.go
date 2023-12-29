@@ -20,4 +20,8 @@ func SetupRoutes(app *fiber.App) {
 	player.Get("/", handler.GetAllPlayers)
 	player.Post("/", handler.PostPlayerTelem)
 	player.Get("/:userName", handler.GetPlayer)
+
+
+	location := api.Group("/location",logger.New())
+	location.Post("/",handler.PostLocation)
 }
