@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/jackc/pgx/v4/pgxpool"
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 var DB *pgxpool.Pool
@@ -13,7 +13,7 @@ var DB *pgxpool.Pool
 func ConnectDB(DATABASE_URL string) {
 	var err error
 	ctx := context.Background()
-	DB, err = pgxpool.Connect(ctx, DATABASE_URL)
+	DB, err = pgxpool.New(ctx, DATABASE_URL)
 	if err != nil {
 		fmt.Println("DATABASE_URL:", DATABASE_URL)
 		fmt.Println(err.Error())

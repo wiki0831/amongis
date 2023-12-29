@@ -18,7 +18,7 @@ services:
       - 5432:5432
     volumes:
       - pg-data:/var/lib/postgresql/data/
-      - ./sql/Startup.sql:/docker-entrypoint-initdb.d/01_startup.sql
+      - ./database/01_startup.sql:/docker-entrypoint-initdb.d/01_startup.sql
 
   app:
     restart: always
@@ -32,6 +32,28 @@ services:
         condition: service_healthy
     links:
       - database
+
+  pg_tileserv:
+    image: pramsey/pg_tileserv:20231005
+    container_name: pg_tileserv
+    env_file:
+      - ./config/.env
+    depends_on:
+      database:
+        condition: service_healthy
+    ports:
+      - 7800:7800
+
+  pg_featureserv:
+    image: pramsey/pg_featureserv
+    container_name: pg_featureserv
+    env_file:
+      - ./config/.env
+    depends_on:
+      database:
+        condition: service_healthy
+    ports:
+      - 9000:9000
 
 volumes:
   pg-data:
