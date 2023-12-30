@@ -95,13 +95,13 @@ func CreatePlayerTelemetry(user model.Player) error {
 func GetPlayersNearby(currentPlayer model.Player) ([]model.Player, error) {
 
 	ctx := context.Background()
+	//queryString need update
 	queryString := fmt.Sprintf(
 		`SELECT 
 		id, name, role, room, status, created_at, ST_AsBinary(location) 
 		FROM latest_player_data 
-		where  name != '%s'
-		and status = 'alive'`,
-		currentPlayer.Name,
+		WHERE ST_DWithin(location,ST_GeomFromText('%s', 4326), 0.001)`,
+		currentPlayer.Location.AsText(),
 	)
 
 	rows, err := DB.Query(ctx, queryString)

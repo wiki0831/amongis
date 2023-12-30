@@ -24,7 +24,7 @@ func PostLocation(c *fiber.Ctx) error {
 			JSON(fiber.Map{"status": "error", "message": "Review your input", "errors": logicErr.Error()})
 	}
 
-	// save player telemetry to db
+	// save location to db
 	dbErr := database.CreateLocation(*location)
 	if dbErr != nil {
 		return c.
@@ -38,3 +38,4 @@ func PostLocation(c *fiber.Ctx) error {
 
 	return c.Status(200).SendString("location logged 👍")
 }
+
