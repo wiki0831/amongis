@@ -61,14 +61,14 @@ func PostPlayerTelem(c *fiber.Ctx) error {
 	}
 
 	// compute user actionable items
-	actions, logicErr := logic.GetActionItem(player)
+	userActions, logicErr := logic.GetAvailableAction(player)
 	if logicErr != nil {
 		return c.
 			Status(500).
 			JSON(fiber.Map{"status": "error", "message": "unable to compute user actions", "errors": logicErr.Error()})
 	}
 	// perform action items
-	logic.PerformActionItem(player, actions)
+	logic.PerformActionItem(player, userActions)
 
-	return c.Status(200).JSON(actions)
+	return c.Status(200).JSON(userActions)
 }

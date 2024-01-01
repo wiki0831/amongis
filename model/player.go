@@ -16,13 +16,9 @@ type Player struct {
 	Room      string       `json:"room"`
 	Status    string       `json:"status"`
 	Location  geom.Point   `json:"location" required:"true"`
-	Action    PlayerAction `json:"action" required:"true"`
+	Action    Action `json:"action" required:"true"`
 }
 
-type PlayerAction struct {
-	ActionType string `json:"action_type" required:"true"`
-	Target     string `json:"target" required:"true"`
-}
 
 func (p *Player) Validate() error {
 	if p.CreatedAt.IsZero() {
@@ -36,4 +32,11 @@ func (p *Player) Validate() error {
 	}
 	//Todo Check current status in DB
 	return nil
+}
+
+type Action struct {
+	ActionStatus string   `json:"action_status" required:"true"`
+	ActionType   string `json:"action_type" required:"true"`
+	Target       string `json:"target" required:"true"`
+	TargetType   string `json:"target_type" required:"true"`
 }

@@ -31,3 +31,34 @@ func CreateLocation(location model.Location) error {
 
 	return nil
 }
+
+func GetLocationsNearby(currentPlayer model.Player) ([]model.Location, error) {
+
+	ctx := context.Background()
+	queryString := fmt.Sprintf(
+		`SELECT 
+		id, name, role, room, status, created_at, ST_AsBinary(location) 
+		FROM location 
+		WHERE ST_DWithin(location,ST_GeomFromText('%s', 4326), 0.001)`,
+		currentPlayer.Location.AsText(),
+	)
+
+	rows, err := DB.Query(ctx, queryString)
+	if err != nil {
+		return nil, fmt.Errorf("location doesnt exist")
+	}
+
+	var locations []model.Location
+
+	for rows.Next() {
+		var nextlocation model.Location
+		err := rows.Scan(&nextlocation.Id, &nextlocation.Name, &nextlocation.Role, &nextlocation.Room, &nextlocation.Status, &nextlocation.CreatedAt, &nextlocation.Location)
+		if err != nil {
+			return nil, err
+		}
+
+		locations = append(locations, nextlocation)
+	}
+
+	return locations, nil
+}
