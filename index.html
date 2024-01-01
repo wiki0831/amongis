@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <meta charset="utf-8">
+        <title>Add a third party vector tile source</title>
+        <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+        <link href="https://api.mapbox.com/mapbox-gl-js/v3.0.1/mapbox-gl.css" rel="stylesheet">
+        <script src="https://api.mapbox.com/mapbox-gl-js/v3.0.1/mapbox-gl.js"></script>
+        <style>
+            body {
+                margin: 0;
+                padding: 0;
+            }
+
+            #map {
+                position: absolute;
+                top: 0;
+                bottom: 0;
+                width: 100%;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div id="map"></div>
+        <script>
+            mapboxgl.accessToken = 'pk.eyJ1IjoiY3lzY2hyaXMiLCJhIjoiY2xxaTgxNGtjMXJtejJxcGxxZ25kdGpqZCJ9.dSHNNQ_yOJJkQk47NTPfQQ';
+            const map = new mapboxgl.Map({
+                container: 'map',
+                // Choose from Mapbox's core styles, or make your own style with Mapbox Studio
+                style: 'mapbox://styles/mapbox/light-v11',
+                zoom: 10,
+                center: [-80.42154242217487,
+                    37.22916386775468]
+            });
+
+
+            // var vectorSource = "ne-source";
+            // var vectorId = "ne-layer";
+
+            // // Build the tile URL
+            // var vectorServer = "http://localhost:7800/";
+            // var vectorSourceLayer = "public.location";
+            // // The data table has a lot of columns, we retrieve just three
+            // var vectorProps = "?properties=name,role,room,status"
+            // var vectorUrl = vectorServer + vectorSourceLayer + "/{z}/{x}/{y}.pbf" + vectorProps;
+
+            // console.log(vectorUrl)
+
+            map.on('load', () => {
+                map.addSource('location', {
+                    type: 'vector',
+                    data: 'http://localhost:7800/public.latest_player_data/{z}/{x}/{y}.pbf'
+                });
+
+                map.addLayer(
+                    {
+                        'id': 'terrain-data',
+                        'type': 'circle',
+                        'source': 'location',
+                        'source-layer': 'contour',
+                    },
+                    'road-label-simple' // Add layer below labels
+                )
+            });
+
+            map.addControl(new mapboxgl.NavigationControl());
+        </script>
+
+    </body>
+
+</html>
