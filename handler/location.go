@@ -39,3 +39,13 @@ func PostLocation(c *fiber.Ctx) error {
 	return c.Status(200).SendString("location logged 👍")
 }
 
+func PostCheckExit(c *fiber.Ctx) error {
+	body := c.Body()
+	exitStatus := database.CheckExit(string(body))
+
+	if exitStatus {
+		return c.Status(200).SendString("exit is opened in: " + string(body))
+	} else {
+		return c.Status(500).SendString("exit is closed in: " + string(body))
+	}	
+}

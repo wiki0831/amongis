@@ -24,4 +24,5 @@ func SetupRoutes(app *fiber.App) {
 
 	location := api.Group("/location",logger.New())
 	location.Post("/",handler.PostLocation)
+	location.Post("/checkExit",handler.PostCheckExit)
 }

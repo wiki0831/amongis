@@ -92,6 +92,37 @@ func CreatePlayerTelemetry(user model.Player) error {
 	return nil
 }
 
+func ModifyPlayerTelemetry(user model.Player) error {
+	currentplayer, err := GetPlayerInfo(user.Name)
+	if err != nil{
+		return fmt.Errorf("user not exist: %w", err)
+	}
+	if currentplayer.CreatedAt.Before(user.CreatedAt){
+		return fmt.Errorf("invalid time")
+	}
+	query := `
+			INSERT INTO player 
+				(name, role, room, status, location, created_at) 
+			VALUES 
+				(@userName, @userRole, @userRoom, @userStatus, ST_GeomFromWKB(@userLocation,4326), @userTimestamp)`
+
+	args := pgx.NamedArgs{
+		"userName":      currentplayer.Name,
+		"userRole":      currentplayer.Role,
+		"userRoom":      currentplayer.Room,
+		"userStatus":    currentplayer.Status,
+		"userLocation":  user.Location.AsBinary(),
+		"userTimestamp": user.CreatedAt,
+	}
+
+	_, err2 := DB.Exec(context.Background(), query, args)
+	if err2 != nil {
+		return fmt.Errorf("unable to insert row: %w", err)
+	}
+
+	return nil
+}
+
 func GetPlayersNearby(currentPlayer model.Player) ([]model.Player, error) {
 
 	ctx := context.Background()
@@ -100,8 +131,9 @@ func GetPlayersNearby(currentPlayer model.Player) ([]model.Player, error) {
 		`SELECT 
 		id, name, role, room, status, created_at, ST_AsBinary(location) 
 		FROM latest_player_data 
-		WHERE ST_DWithin(location,ST_GeomFromText('%s', 4326), 0.001)`,
-		currentPlayer.Location.AsText(),
+		WHERE ST_DWithin(location,ST_GeomFromText('%s', 4326), 0.001)
+		AND name != '%s'`,
+		currentPlayer.Location.AsText(),currentPlayer.Name,
 	)
 
 	rows, err := DB.Query(ctx, queryString)

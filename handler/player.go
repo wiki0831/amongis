@@ -68,7 +68,9 @@ func PostPlayerTelem(c *fiber.Ctx) error {
 			JSON(fiber.Map{"status": "error", "message": "unable to compute user actions", "errors": logicErr.Error()})
 	}
 	// perform action items
-	logic.PerformActionItem(player, userActions)
-
-	return c.Status(200).JSON(userActions)
+	if player.Status == "alive" {
+		logic.PerformActionItem(player, userActions)
+	}
+	newAvailableAction, _ := logic.GetAvailableAction(player)
+	return c.Status(200).JSON(newAvailableAction)
 }
